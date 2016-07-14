@@ -13,6 +13,31 @@ import {
 } from 'react-native';
 
 class SplashWalls extends Component {
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      wallsJSON: [],
+      isLoading: true
+    };
+  }
+
+  componentDidMount() {
+    this.fetchWallsJSON();
+  }
+
+  fetchWallsJSON() {
+    console.log("Walls will be fetched");
+
+    const url = "https://unsplash.it/list";
+    fetch(url)
+      .then( response => response.json() )
+      .then( jsonData => { 
+        console.log(jsonData)
+        })
+      .catch( err => console.log("Fetch error: " + err) );
+  }
+
   render() {
     return (
       <View style={styles.container}>
