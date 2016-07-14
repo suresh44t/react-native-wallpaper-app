@@ -9,8 +9,13 @@ import {
   AppRegistry,
   StyleSheet,
   Text,
-  View
+  View,
+  ActivityIndicator
 } from 'react-native';
+
+import RandManager from './rand_manager';
+
+const NUM_WALLPAPERS = 5;
 
 class SplashWalls extends Component {
   constructor(props) {
@@ -33,45 +38,74 @@ class SplashWalls extends Component {
     fetch(url)
       .then( response => response.json() )
       .then( jsonData => { 
-        console.log(jsonData)
-        })
+        var randomIds = RandManager.uniqueRandomNumbers(NUM_WALLPAPERS, 0, jsonData.length);
+        var walls = [];
+
+        randomIds.forEach(randomId => {
+          walls.push(jsonData[randomId]);
+        });
+
+        this.setState({
+          isLoading: false,
+          wallsJSON: [].concat(walls),
+        });  
+
+      })
       .catch( err => console.log("Fetch error: " + err) );
   }
 
-  render() {
+  renderLoadingMessage() {
     return (
-      <View style={styles.container}>
-        <Text style={styles.welcome}>
-          Welcome to React Native!
-        </Text>
-        <Text style={styles.instructions}>
-          To get started, edit index.ios.js
-        </Text>
-        <Text style={styles.instructions}>
-          Press Cmd+R to reload,{'\n'}
-          Cmd+D or shake for dev menu
+      <View style={styles.loadingContainer}>
+        <ActivityIndicator
+          animating={true}
+          color={'#fff'}
+          size={'small'}
+          style={{margin: 15}}
+        />
+
+        <Text style={{color: '#fff'}}>
+          Loading Data
         </Text>
       </View>
-    );
+    )
+  }
+
+  renderResults() {
+    var { wallsJSON, isLoading } = this.state;
+
+    if ( !isLoading ) {
+      return (
+        <View>
+          {wallsJSON.map((wallpaper, index) => {
+            return (
+              <Text key={index}>
+                {wallpaper.author}
+              </Text>
+            )
+          })}
+        </View>
+      )
+    }
+  }
+
+  render() {
+    var { isLoading } = this.state;
+    if (isLoading) {
+      return this.renderLoadingMessage();
+    } else {  
+      return this.renderResults();
+    }
   }
 }
 
 const styles = StyleSheet.create({
-  container: {
+  loadingContainer: {
     flex: 1,
+    flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#F5FCFF',
-  },
-  welcome: {
-    fontSize: 20,
-    textAlign: 'center',
-    margin: 10,
-  },
-  instructions: {
-    textAlign: 'center',
-    color: '#333333',
-    marginBottom: 5,
+    backgroundColor: '#000',
   },
 });
 
