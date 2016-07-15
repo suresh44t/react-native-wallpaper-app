@@ -6,17 +6,22 @@
 
 import React, { Component } from 'react';
 import Swiper from 'react-native-swiper';
+import Image from 'react-native-image-progress';
+import ProgressBar from 'react-native-progress/Bar';
 import {
   AppRegistry,
   StyleSheet,
   Text,
   View,
-  ActivityIndicator
+  ActivityIndicator,
+  Dimensions
 } from 'react-native';
 
 import RandManager from './rand_manager';
 
 const NUM_WALLPAPERS = 5;
+var {width, height} = Dimensions.get('window');
+
 
 class SplashWalls extends Component {
   constructor(props) {
@@ -80,9 +85,18 @@ class SplashWalls extends Component {
         <Swiper>
           {wallsJSON.map((wallpaper, index) => {
             return (
-              <Text key={index}>
-                {wallpaper.author}
-              </Text>
+              <View key={index}>
+                <Image 
+                  source={{ uri: `https://unsplash.it/${wallpaper.width}/${wallpaper.height}?image=${wallpaper.id}` }}
+                  indicator={ProgressBar}
+                  style={styles.wallpaperImage}
+                  indicatorProps={{
+                  }}
+                >   
+                  <Text style={styles.label}>Photo by</Text>
+                  <Text style={styles.label_author}>{wallpaper.author}</Text>
+                </Image>  
+              </View>
             )
           })}
         </Swiper>
@@ -108,6 +122,38 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: '#000',
   },
+
+  wallpaperImage: {
+    flex: 1,
+    width: width,
+    height: height,
+    backgroundColor: '#000',
+  },
+
+  label: {
+    position: 'absolute',
+    color: '#fff',
+    fontSize: 13,
+    backgroundColor: 'rgba(0, 0, 0, 0.8)',
+    padding: 2,
+    paddingLeft: 5,
+    top: 20,
+    left: 20,
+    width: width/2,
+  },
+
+  label_author: {
+    position: 'absolute',
+    color: '#fff',
+    fontSize: 15,
+    backgroundColor: 'rgba(0, 0, 0, 0.8)',
+    padding: 2,
+    paddingLeft: 5,
+    top: 41,
+    left: 20,
+    fontWeight: 'bold',
+    width: width/2,
+  }
 });
 
 AppRegistry.registerComponent('SplashWalls', () => SplashWalls);
