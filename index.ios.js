@@ -5,6 +5,7 @@
  */
 
 import React, { Component } from 'react';
+import Swiper from 'react-native-swiper';
 import {
   AppRegistry,
   StyleSheet,
@@ -76,7 +77,7 @@ class SplashWalls extends Component {
 
     if ( !isLoading ) {
       return (
-        <View>
+        <Swiper>
           {wallsJSON.map((wallpaper, index) => {
             return (
               <Text key={index}>
@@ -84,7 +85,7 @@ class SplashWalls extends Component {
               </Text>
             )
           })}
-        </View>
+        </Swiper>
       )
     }
   }
