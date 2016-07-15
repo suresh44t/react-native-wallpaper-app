@@ -7,7 +7,7 @@
 import React, { Component } from 'react';
 import Swiper from 'react-native-swiper';
 import Image from 'react-native-image-progress';
-import ProgressBar from 'react-native-progress/Bar';
+import ProgressCircle from 'react-native-progress/Circle';
 import {
   AppRegistry,
   StyleSheet,
@@ -117,32 +117,11 @@ class SplashWalls extends Component {
   }
 
   isDoubleTap(currentTouchTimeStamp, {x0, y0}) {
+    console.log("Double tapped!");
     var {prevTouchX, prevTouchY, prevTouchTimeStamp} = this.prevTouchInfo;
     var dt = currentTouchTimeStamp - prevTouchTimeStamp;
 
     return (dt < DOUBLE_TAP_DELAY && Utils.distance(prevTouchX, prevTouchY, x0, y0) < DOUBLE_TAP_RADIUS);
-  }
-
-  saveCurrentWallpaperToCameraRoll() {
-    var {wallsJSON} = this.state;
-    var currentWall = wallsJSON[this.currentWallIndex];
-    var currentWallURl = `http://unsplash.it/${currentWall.width}/${currentWall.height}?image=${currentWall.id}`;
-
-    CameraRoll.saveToCameraRoll(currentWallURl)
-      .then((data) => {
-        this.setState({isHudVisible: false});
-        AlertIOS.alert(
-          'Saved',
-          'Wallpaper successfully saved to Camera Roll',
-          [
-            {text: 'High 5!', onPress: () => console.log('OK Pressed!')}
-          ]
-        );
-      })
-      .catch(err => {
-        this.setState({isHudVisible: false});
-        console.error('Error saving to camera roll', err);
-      })
   }
 
   renderLoadingMessage() {
@@ -173,7 +152,7 @@ class SplashWalls extends Component {
               <View key={index}>
                 <Image 
                   source={{ uri: `https://unsplash.it/${wallpaper.width}/${wallpaper.height}?image=${wallpaper.id}` }}
-                  indicator={ProgressBar}
+                  indicator={ProgressCircle}
                   style={styles.wallpaperImage}
                   indicatorProps={{
                   }}
